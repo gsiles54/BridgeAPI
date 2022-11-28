@@ -9,34 +9,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.spacex.challenge.service.TaskService;
-import com.spacex.challenge.taskmodel.Task;
+import com.spacex.challenge.task.model.Task;
+import com.spacex.challenge.task.service.TaskService;
+import com.spacex.challenge.trello.service.TrelloBoardConsumer;
 
 @RestController
-@RequestMapping("/ASD")
+@RequestMapping("/")
 public class HomeController {
 	@Autowired
 	TaskService taskService;
-	/*@PostMapping(value="/q",consumes = "application/json")
-	public ResponseEntity<Task> createTask(@RequestBody Bug bugtask){
-		System.out.println("Bug");
-		return null;
-	}
+	@Autowired
+	TrelloBoardConsumer cons;
+
 	@PostMapping(value="/",consumes = "application/json")
-	public ResponseEntity<Task> createTask(@RequestBody ManualTask manualTask){
-		System.out.println("Manual");
-		return null;
-	}
-	@PostMapping(value="/",consumes = "application/json")
-	public ResponseEntity<Task> createTask(@RequestBody Issue issue){
-		System.out.println("Issue");
-		return null;
-	}*/
-	@PostMapping(value="/",consumes = "application/json")
-	public ResponseEntity<Task> createTask(@RequestBody JsonNode bugtask) throws IllegalArgumentException,JsonProcessingException{
+	public ResponseEntity<Task> createTask(@RequestBody JsonNode jsonTask) throws IllegalArgumentException,JsonProcessingException{
 		
-		Task currentTask = taskService.handleNewTask(bugtask);
-		System.out.println(currentTask.getTitle());
+	 taskService.handleNewTask(jsonTask);
 		return null;
 	}
 }

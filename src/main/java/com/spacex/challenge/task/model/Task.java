@@ -1,4 +1,4 @@
-package com.spacex.challenge.taskmodel;
+package com.spacex.challenge.task.model;
 
 public abstract class Task {
 	protected String type;

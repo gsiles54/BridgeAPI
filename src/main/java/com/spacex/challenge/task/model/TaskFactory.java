@@ -1,4 +1,4 @@
-package com.spacex.challenge.taskmodel;
+package com.spacex.challenge.task.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,9 @@ import com.spacex.challenge.misc.ITitleRandomizer;
 @Service
 public class TaskFactory implements ITaskFactory{
 
-	private final String BUG = "bug";
-	private final String ISSUE = "issue";
-	private final String TASK = "task";
+	static private final String BUG = "bug";
+	static private final String ISSUE = "issue";
+	static private final String TASK = "task";
 	@Autowired
 	private ITitleRandomizer titleRandomizer;
 	

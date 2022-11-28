@@ -22,6 +22,13 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 		          new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 		    }
 	
+	@ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Object> handleIllegalArgumentConflict(
+    		IllegalArgumentException ex, WebRequest request) {
+        String bodyOfResponse = "The provided json value for \"type\" is not valid. No task has been created. " + ex.getMessage() ;
+        return handleExceptionInternal(ex, bodyOfResponse, 
+          new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
 	
 	@ExceptionHandler(UnrecognizedPropertyException.class)
 		    protected ResponseEntity<Object> handlePropertyConflict(
