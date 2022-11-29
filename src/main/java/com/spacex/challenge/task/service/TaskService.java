@@ -31,9 +31,20 @@ public class TaskService{
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void handleNewTask(JsonNode node) throws JsonProcessingException, IllegalArgumentException {
 		
-		Task aTask = taskFactory.createTask(node);
+		Task aTask = createTaskFromJson(node);
 		
-		TaskWorker worker = workerFactory.getWorker(aTask.getType());
+		TaskWorker worker = createWorkerFromTask(aTask);
 		worker.workTask(aTask); 
+	}
+
+	
+
+	private Task createTaskFromJson(JsonNode node) throws JsonProcessingException {
+		Task aTask = taskFactory.createTask(node);
+		return aTask;
+	}
+	private TaskWorker createWorkerFromTask(Task aTask) {
+		TaskWorker worker = workerFactory.getWorker(aTask.getType());
+		return worker;
 	}
 }

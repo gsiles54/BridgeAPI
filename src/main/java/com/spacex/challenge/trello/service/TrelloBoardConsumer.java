@@ -44,33 +44,33 @@ public class TrelloBoardConsumer extends TrelloConector{
 
 	
 	public List<TrelloMember> getListsOfMembersFromBoard(String idBoard) {
-	    Map<String, Object> map = buildDefaultVariableMap(idBoard);
-	   
-	  String url =buildDefaultMembersBoardURI();
-	    ResponseEntity<TrelloMember[]> responseEntity =
-	    		   restTemplate.getForEntity(url, TrelloMember[].class,map);
+		 ResponseEntity<TrelloMember[]> entityResponse = getMembersOfABoard(idBoard);
 	    
-	    return Arrays.stream(responseEntity.getBody())
-	    .collect(Collectors.toList());
-	    
+	 return   Arrays.stream(entityResponse.getBody())
+			 		.collect(Collectors.toList());
 	}
 	
 	
 	public Optional<TrelloMember> getRandomMemberFromBoard(String idBoard) {
-	    Map<String, Object> map = buildDefaultVariableMap(idBoard);
-	   
-	  String url =buildDefaultMembersBoardURI();
-	    ResponseEntity<TrelloMember[]> responseEntity =
-	    		   restTemplate.getForEntity(url, TrelloMember[].class,map);
-	    
+	  
 
-	    List<TrelloMember> memberList=  Arrays.stream(responseEntity.getBody())
-	    								.collect(Collectors.toList());
+	    List<TrelloMember> memberList=  getListsOfMembersFromBoard(idBoard);
 	    Collections.shuffle(memberList);
 	    
 	    return memberList.isEmpty()?Optional.empty():Optional.of(memberList.get(0));
 	  
 	    
+	}
+
+
+	public  ResponseEntity<TrelloMember[]> getMembersOfABoard(String idBoard) {
+		Map<String, Object> map = buildDefaultVariableMap(idBoard);
+	   
+	  String url =buildDefaultMembersBoardURI();
+	  ResponseEntity<TrelloMember[]> responseEntity =
+	    		   restTemplate.getForEntity(url, TrelloMember[].class,map);
+	    return responseEntity;
+	    	    
 	}
 	
 

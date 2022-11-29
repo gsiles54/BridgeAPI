@@ -1,6 +1,7 @@
 package com.spacex.challenge.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,6 @@ public class HomeController {
 	public ResponseEntity<Task> createTask(@RequestBody JsonNode jsonTask) throws IllegalArgumentException,JsonProcessingException{
 		
 	 taskService.handleNewTask(jsonTask);
-		return null;
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
