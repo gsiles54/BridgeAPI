@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spacex.challenge.configuration.ConfigurationTrello;
+import com.spacex.challenge.misc.ITitleRandomizer;
 import com.spacex.challenge.task.exception.MissingItemAtTrelloBoard;
 import com.spacex.challenge.task.model.Bug;
 import com.spacex.challenge.task.service.TaskService;
@@ -25,9 +26,14 @@ public class BugTaskWorker implements TaskWorker<Bug> {
 
 	@Autowired
 	ConfigurationTrello config;
+	
+	@Autowired
+	ITitleRandomizer titleRandomizer;
 	@Override
 	public String workTask(Bug task) throws MissingItemAtTrelloBoard{
-
+		if(task.getTitle().isEmpty()){
+			task.setTitle(titleRandomizer.randomizeTitle());
+		}
 		Optional<TrelloMember> randomMember = consumer.getRandomMemberFromBoard(config.getBoardId());
 		String cardId = randomMember.orElseThrow(() -> new MissingItemAtTrelloBoard("There are no members on the board")).getId();
 		String[] cardIds = new String[1];

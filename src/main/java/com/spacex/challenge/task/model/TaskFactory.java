@@ -14,8 +14,6 @@ public class TaskFactory implements ITaskFactory{
 	static private final String BUG = "bug";
 	static private final String ISSUE = "issue";
 	static private final String TASK = "task";
-	@Autowired
-	private ITitleRandomizer titleRandomizer;
 	
 	@Override
 	public Task createTask(JsonNode task) throws IllegalArgumentException,JsonProcessingException {
@@ -24,7 +22,6 @@ public class TaskFactory implements ITaskFactory{
 			switch(task.get("type").asText()) {
 			case BUG:
 				Bug bugTask = obj.treeToValue(task, Bug.class);
-				bugTask.setTitle(titleRandomizer.randomizeTitle());
 				return bugTask;
 			case ISSUE:
 				return obj.treeToValue(task, Issue.class);

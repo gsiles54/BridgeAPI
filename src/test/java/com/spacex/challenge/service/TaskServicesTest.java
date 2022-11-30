@@ -1,6 +1,8 @@
 package com.spacex.challenge.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,12 +72,14 @@ public class TaskServicesTest {
 	@Test
 	public void testWrongIssueTaskType() throws MissingItemAtTrelloBoard {
 		Issue issueTask = new Issue();
-		issueTask.setType(TaskService.BUG_TYPE);
-		issueTask.setTitle("IssueTask23");
+		issueTask.setType("Dummy");
+		issueTask.setTitle("IssueTask233");
 		issueTask.setDescription("issue");
 		
-		String response = issueTaskService.handleNewTask(issueTask);
-		assertThat(response!=null&&!response.isEmpty());
+		
+		  Throwable exception = assertThrows(IllegalArgumentException.class, () -> issueTaskService.handleNewTask(issueTask));
+		    assertEquals("Declared task doesn't have any functionality on the server: Dummy", exception.getMessage());
+	
 		
 	}
 }

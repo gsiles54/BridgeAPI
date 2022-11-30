@@ -1,6 +1,5 @@
 package com.spacex.challenge.trello.service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -22,10 +21,8 @@ public class TrelloProducer extends TrelloConector{
 
 		
 		public String createCard(String idBoard,TrelloCard tCard) {
-			   Map<String, Object> map = new HashMap<>();
-			    map.put("id", idBoard);
-			    map.put("key", KEY);
-			    map.put("token",TOKEN);
+			
+			   Map<String, Object> map = buildDefaultVariableMap(idBoard);
 			    
 			    HttpEntity<TrelloCard> request = new HttpEntity<>(tCard);
 			   restTemplate.postForObject(BASE_URL +cardURI + KEYTOKEN, request, TrelloCard.class, map);
