@@ -21,7 +21,7 @@ public class TrelloProducer extends TrelloConector{
 
 
 		
-		public void createCard(String idBoard,TrelloCard tCard) {
+		public String createCard(String idBoard,TrelloCard tCard) {
 			   Map<String, Object> map = new HashMap<>();
 			    map.put("id", idBoard);
 			    map.put("key", KEY);
@@ -29,7 +29,8 @@ public class TrelloProducer extends TrelloConector{
 			    
 			    HttpEntity<TrelloCard> request = new HttpEntity<>(tCard);
 			   restTemplate.postForObject(BASE_URL +cardURI + KEYTOKEN, request, TrelloCard.class, map);
-			    
+			   
+			   return request.getBody().getName();
 		}
 		
 	

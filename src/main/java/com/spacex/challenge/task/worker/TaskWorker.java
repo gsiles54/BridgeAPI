@@ -1,11 +1,11 @@
 package com.spacex.challenge.task.worker;
 
-import com.spacex.challenge.task.model.Task;
+import com.spacex.challenge.task.exception.MissingItemAtTrelloBoard;
 
-public interface TaskWorker<T extends Task> {
+public interface TaskWorker<T> {
 
 	
-	public void workTask(T aTask);
+	public String workTask(T aTask) throws MissingItemAtTrelloBoard;
 	
 	public String getType();
 }

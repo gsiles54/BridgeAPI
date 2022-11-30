@@ -6,36 +6,37 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.spacex.challenge.misc.ITitleRandomizer;
-import com.spacex.challenge.misc.TitleRandomizer;
 import com.spacex.challenge.task.model.Bug;
-import com.spacex.challenge.task.model.ITaskFactory;
 import com.spacex.challenge.task.model.Issue;
 import com.spacex.challenge.task.model.ManualTask;
-import com.spacex.challenge.task.model.Task;
 import com.spacex.challenge.task.service.TaskService;
 import com.spacex.challenge.task.worker.TaskWorker;
 import com.spacex.challenge.task.worker.WorkerFactory;
+
 @SpringBootTest
 public class WorkTest {
+	@Autowired
+	WorkerFactory taskFactory;
 	
 	@Test
-	@Autowired
-	public void testBugWorkerCreation(WorkerFactory<Bug> taskFactory) {
+	public void testBugWorkerCreation() {
 		TaskWorker<Bug> bugWorker =taskFactory.getWorker(TaskService.BUG_TYPE);
 		assertThat(bugWorker.getType().equals(TaskService.BUG_TYPE));
 	}
 	@Test
-	@Autowired
-	public void testTaskWorkerCreation(WorkerFactory<ManualTask> taskFactory) {
+	public void testTaskWorkerCreation() {
 		TaskWorker<ManualTask> taskWorker =taskFactory.getWorker(TaskService.TASK_TYPE);
 		assertThat(taskWorker.getType().equals(TaskService.TASK_TYPE));
 	}
 	
 	@Test
-	@Autowired
-	public void testIssueWorkerCreation(WorkerFactory<Issue> taskFactory) {
+	public void testIssueWorkerCreation() {
 		TaskWorker<Issue> issueWorker =taskFactory.getWorker(TaskService.ISSUE_TYPE);
 		assertThat(issueWorker.getType().equals(TaskService.ISSUE_TYPE));
+	}
+	@Test
+	public void taskWithWrongType() {
+		TaskWorker<Issue> issueWorker =taskFactory.getWorker(TaskService.BUG_TYPE);
+		assertThat(!issueWorker.getType().equals(TaskService.ISSUE_TYPE));
 	}
 }

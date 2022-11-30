@@ -8,11 +8,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spacex.challenge.trello.model.TrelloMember;
+
+import jakarta.annotation.PostConstruct;
+
+import com.spacex.challenge.configuration.ConfigurationTrello;
 import com.spacex.challenge.trello.model.TrelloLabel;
 import com.spacex.challenge.trello.model.TrelloList;
 
@@ -29,8 +34,15 @@ public class TrelloBoardConsumer extends TrelloConector{
 	private final String LABELS_URI = "/labels";
 	private final String LISTS_URI= "/lists";
 	private final String TO_DO_LIST = "To Do";
-
 	
+	private String idBoard;
+	@Autowired
+	ConfigurationTrello config;
+	
+	@PostConstruct
+	private void loadIdBoard() {
+		idBoard=config.getBoardId();
+	}
 	public List<TrelloList> getListsFromBoard(String idBoard) {
 			
 		    Map<String, Object> map = buildDefaultVariableMap(idBoard);

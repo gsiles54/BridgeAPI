@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.spacex.challenge.task.exception.MissingItemAtTrelloBoard;
 
 @ControllerAdvice
 public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler {
@@ -46,4 +47,11 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
           new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 	
+    @ExceptionHandler(MissingItemAtTrelloBoard.class)
+    protected ResponseEntity<Object> handleTrelloProcessingConflict(
+    		MissingItemAtTrelloBoard ex, WebRequest request) {
+        String bodyOfResponse = "An error has ocurred while processing the json data. Please contact administrator";
+        return handleExceptionInternal(ex, bodyOfResponse, 
+          new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
 }

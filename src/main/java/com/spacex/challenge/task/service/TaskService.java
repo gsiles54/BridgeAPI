@@ -5,17 +5,18 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.spacex.challenge.task.exception.MissingItemAtTrelloBoard;
 import com.spacex.challenge.task.model.ITaskFactory;
 import com.spacex.challenge.task.model.Task;
 import com.spacex.challenge.task.worker.TaskWorker;
 import com.spacex.challenge.task.worker.WorkerFactory;
 
 @Service
-public class TaskService{
+public class TaskService implements ITaskService<JsonNode>{
 	
 	@Autowired
 	ITaskFactory taskFactory;
-	@SuppressWarnings("rawtypes")
+
 	@Autowired
 	WorkerFactory workerFactory;
 	
@@ -29,12 +30,15 @@ public class TaskService{
 	public static final String TASK_TYPE = "task";
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void handleNewTask(JsonNode node) throws JsonProcessingException, IllegalArgumentException {
-		
-		Task aTask = createTaskFromJson(node);
-		
+	public String handleNewTask(JsonNode node)  throws MissingItemAtTrelloBoard, IllegalArgumentException {
+		try {
+			Task aTask = createTaskFromJson(node);
 		TaskWorker worker = createWorkerFromTask(aTask);
-		worker.workTask(aTask); 
+		return worker.workTask(aTask); 
+		}catch(JsonProcessingException ex) {
+			throw new IllegalArgumentException("Error al procesar JSON");
+		}
+		
 	}
 
 	
@@ -43,8 +47,9 @@ public class TaskService{
 		Task aTask = taskFactory.createTask(node);
 		return aTask;
 	}
-	private TaskWorker createWorkerFromTask(Task aTask) {
-		TaskWorker worker = workerFactory.getWorker(aTask.getType());
+	
+	private <T> TaskWorker<T> createWorkerFromTask(Task aTask) {
+		TaskWorker<T> worker = workerFactory.getWorker(aTask.getType());
 		return worker;
 	}
 }

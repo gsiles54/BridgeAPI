@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spacex.challenge.configuration.ConfigurationTrello;
+import com.spacex.challenge.task.exception.MissingItemAtTrelloBoard;
 import com.spacex.challenge.task.model.Issue;
 import com.spacex.challenge.task.service.TaskService;
 import com.spacex.challenge.trello.model.TrelloCard;
@@ -18,17 +20,19 @@ public class IssueTaskWoker implements TaskWorker<Issue> {
 	TrelloBoardConsumer consumer;
 	@Autowired
 	TrelloProducer producer;
-	
+	@Autowired
+	ConfigurationTrello config;
 	@Override
-	public void workTask(Issue task) {
-		Optional<TrelloList> todoList = consumer.getToDoList("EnpRiV5p");
+	public String workTask(Issue task) throws MissingItemAtTrelloBoard{
+		Optional<TrelloList> todoList = consumer.getToDoList(config.getBoardId());
 		TrelloCard tCard = new TrelloCard();
-		tCard.setIdBoard("EnpRiV5p");
+		tCard.setIdBoard(config.getBoardId());
 		tCard.setDesc(task.getDescription());
 		tCard.setName(task.getTitle());
-		tCard.setIdList(todoList.orElseThrow().getId());
+		tCard.setIdList(todoList.orElseThrow(() -> new MissingItemAtTrelloBoard("To do list doesnt exists")).getId());
 		
-		producer.createCard("EnpRiV5p", tCard);
+		String responseCardId =producer.createCard(config.getBoardId(), tCard);
+		return responseCardId;
 	}
 
 	@Override

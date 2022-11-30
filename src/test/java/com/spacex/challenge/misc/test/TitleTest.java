@@ -1,4 +1,4 @@
-package com.spacex.challenge.service;
+package com.spacex.challenge.misc.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

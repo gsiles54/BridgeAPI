@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spacex.challenge.configuration.ConfigurationTrello;
+import com.spacex.challenge.task.exception.MissingItemAtTrelloBoard;
 import com.spacex.challenge.task.model.Bug;
 import com.spacex.challenge.task.service.TaskService;
 import com.spacex.challenge.trello.model.TrelloMember;
@@ -21,29 +23,32 @@ public class BugTaskWorker implements TaskWorker<Bug> {
 	@Autowired
 	TrelloProducer producer;
 
+	@Autowired
+	ConfigurationTrello config;
 	@Override
-	public void workTask(Bug task) {
+	public String workTask(Bug task) throws MissingItemAtTrelloBoard{
 
-		Optional<TrelloMember> randomMember = consumer.getRandomMemberFromBoard("EnpRiV5p");
-		String cardId = randomMember.orElseThrow().getId();
+		Optional<TrelloMember> randomMember = consumer.getRandomMemberFromBoard(config.getBoardId());
+		String cardId = randomMember.orElseThrow(() -> new MissingItemAtTrelloBoard("There are no members on the board")).getId();
 		String[] cardIds = new String[1];
 		cardIds[0] = cardId;
 		
 		TrelloCard tCard = new TrelloCard();
-		tCard.setIdBoard("EnpRiV5p");
+		tCard.setIdBoard(config.getBoardId());
 		tCard.setDesc(task.getDescription());
 		tCard.setIdMembers(cardIds);
 		tCard.setName(task.getTitle());
 
-		Optional<TrelloLabel> bugLabel = consumer.getLabelFromBoard("EnpRiV5p",TaskService.BUG_LABEL);
+		Optional<TrelloLabel> bugLabel = consumer.getLabelFromBoard(config.getBoardId(),TaskService.BUG_LABEL);
 		String[] labelIds = new String[1];
-		labelIds[0] = bugLabel.orElseThrow().getId();;
+		labelIds[0] = bugLabel.orElseThrow(() -> new MissingItemAtTrelloBoard("Bug label doesnt exists")).getId();
 		tCard.setIdLabels(labelIds);
 		
-		Optional<TrelloList> todoList = consumer.getToDoList("EnpRiV5p");
+		Optional<TrelloList> todoList = consumer.getToDoList(config.getBoardId());
 		
-		tCard.setIdList(todoList.orElseThrow().getId());
-		producer.createCard("EnpRiV5p", tCard);
+		tCard.setIdList(todoList.orElseThrow(() -> new MissingItemAtTrelloBoard("To do list doesnt exists")).getId());
+		String responseCardId = producer.createCard(config.getBoardId(), tCard);
+		return responseCardId;
 		}
 
 
