@@ -1,6 +1,6 @@
 # BridgeAPI
 
-BridgeAPI is an REST API designed to allowed the user to create trello cards via POST methods on the endpoints that are exposed.
+BridgeAPI is an REST API designed to allow the user to create trello cards via POST methods on the endpoints that are exposed.
 Following the provided exercise, you can call the API by doing a POST request on the "/" endpoint.
 
 3 types of cards have been defined
